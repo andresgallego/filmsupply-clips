@@ -1,6 +1,7 @@
 # Filmsupply clips
 
-Filmsupply Sidebar Filter functionality using [React](https://facebook.github.io/react/).
+Filmsupply Sidebar Filter functionality using [React](https://facebook.github.io/react/) and
+[React Pure Component Starter](https://github.com/ericelliott/react-pure-component-starter) boilerplate.
 
 ## Getting Started
 
