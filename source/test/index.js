@@ -1,4 +1,4 @@
-import './components/title';
-import './components/hello';
-import './App.js';
-import './store/reducers/hello';
+import './components/clips';
+import './components/filters';
+import './store/reducers/clips';
+import './store/reducers/filters';
