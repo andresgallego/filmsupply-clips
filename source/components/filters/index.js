@@ -1,4 +1,7 @@
-export default React => ({filters, addFilter, removeFilter}) => {
+
+export default React => ({filters, addFilter, removeFilter, selectedFilter}) => {
+
+  let checkedFilter = [];
 
   const handleChange = (subfilter, e) => {
     if (e.target.checked) {
@@ -8,14 +11,24 @@ export default React => ({filters, addFilter, removeFilter}) => {
     }
   };
 
+  if (selectedFilter) {
+    // array of selected filters
+    checkedFilter = selectedFilter.map(filter => {
+      // return the ids of selected items
+      return filter.name;
+    });
+  }
+
   const FilterListItem = ({filter}) => (
     <div className="filter" key={filter.id}>
-      <p>{filter.filterName}</p>
+      <p><span>{filter.filterName}</span></p>
       <ul>
         {
           filter.subfilters.map( subfilter => {
             return <li className="subfilter-list-item" key={subfilter.id}>
-                    <input type="checkbox" onClick={handleChange.bind(this, subfilter)}></input>
+                    <input type="checkbox"
+                    checked={checkedFilter.indexOf(subfilter.name) !== -1 ? 'checked' : ''}
+                    onChange={handleChange.bind(this, subfilter)}></input>
                     {subfilter.name}
                    </li>;
           })

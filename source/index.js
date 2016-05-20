@@ -8,9 +8,11 @@ const App = createApp(React);
 const mapStateToProps = state => {
   return {
     clips: state.allClips.clips,
-    filters: state.allFilters.filters
+    filters: state.allFilters.filters,
+    selectedFilter: state.selectedFilter
   };
 };
+
 const Filter = connect(mapStateToProps)(App);
 
 render(

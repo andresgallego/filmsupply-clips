@@ -3,7 +3,7 @@ import createFilters from 'components/filters';
 import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
-import { fetchClips } from 'actions/clips';
+import { fetchClips, fetchClipsByFilters } from 'actions/clips';
 import { fetchFilters } from 'actions/filters';
 import { allClips } from 'store/reducers/clips';
 import { allFilters, selectedFilter } from 'store/reducers/filters';
@@ -24,12 +24,20 @@ export const store = createStore(
   )
 );
 
-const addFilter = filter => store.dispatch({ type: 'ADD_FILTER', filter });
-const removeFilter = filter => store.dispatch({ type: 'REMOVE_FILTER', filter });
+const addFilter = filter => {
+  store.dispatch({ type: 'ADD_FILTER', filter });
+  let categories = store.getState().selectedFilter;
+  store.dispatch(fetchClipsByFilters(categories));
+};
+
+const removeFilter = filter => {
+  store.dispatch({ type: 'REMOVE_FILTER', filter });
+  let categories = store.getState().selectedFilter;
+  store.dispatch(fetchClipsByFilters(categories));
+};
 
 store.dispatch(fetchClips());
 store.dispatch(fetchFilters());
-
 
 export default React => () => {
   const Clip = createClips(React);
@@ -37,6 +45,7 @@ export default React => () => {
   const state = store.getState();
   const filterProps = {
     filters: state.allFilters.filters,
+    selectedFilter: state.selectedFilter,
     addFilter,
     removeFilter
   };
@@ -44,6 +53,7 @@ export default React => () => {
     <div className="content">
       <Filter { ...filterProps } />
       <Clip clips={state.allClips.clips} />
+      <Clip />
     </div>
   );
 };

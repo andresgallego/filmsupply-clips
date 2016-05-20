@@ -9,7 +9,7 @@ export const selectedFilter = (
         ...state,
         {
           id: filter.id,
-          name: filter.name
+          name: filter.name,
         }
       ];
     case 'REMOVE_FILTER':

@@ -23,6 +23,21 @@ const getThumbUrl = json => {
   return thumbUrl;
 };
 
+export const fetchClipsByFilters = categories => {
+  const lisfOfCategories = categories.map(cat => {
+    return `categories[]=${cat.id}`;
+  });
+  const joinCategories = lisfOfCategories.join('&');
+  return dispatch => {
+    dispatch(requestClips());
+    return fetch(`https://api.filmsupply.com/api/clips?${joinCategories}`)
+      .then(res => res.json())
+      .then(json => getThumbUrl(json))
+      .then(thumbUrl => dispatch(receiveClips(thumbUrl)))
+      .catch(err => console.log(err));
+  };
+};
+
 export const fetchClips = () => {
   return dispatch => {
     dispatch(requestClips());
