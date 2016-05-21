@@ -18,6 +18,7 @@ const getFiltersAndSubfilters = json => {
     return {
       id: filter.id,
       filterName: filter.name,
+      filterCount: 0,
       subfilters: filter.categories.data.map(cat => {
         return {
           id: cat.id,

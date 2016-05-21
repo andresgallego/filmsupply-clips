@@ -142,14 +142,17 @@ test('Filter', nest => {
     const msg = 'As you select filters with the checkboxes the filter count should increment and decrement';
 
     const filterProps = {
-      selectedFilters: [
+      filters: [
         {
-          id: 19,
-          name: 'Toddler (2-4 years old)'
-        },
-        {
-          id: 22,
-          name: `20's & 30's`
+          id: 1,
+          filterName: 'Age',
+          filterCount: 2,
+          subfilters: [
+            {
+              id: 19,
+              name: 'Toddler (2-4 years old)'
+            }
+          ]
         }
       ]
     };
@@ -157,9 +160,8 @@ test('Filter', nest => {
     const el = <Filter { ...filterProps }/>;
 
     const $ = dom.load(render(el));
-    const output = $('filter-counter').text();
-
-    const actual = output === 2;
+    const output = $('.filter-counter').text();
+    const actual = output === '2';
 
     const expected = true;
 

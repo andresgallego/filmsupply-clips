@@ -13,7 +13,7 @@ const loggerMiddleware = createLogger();
 const rootReducer = combineReducers({
   allClips,
   selectedFilter,
-  allFilters,
+  allFilters
 });
 
 export const store = createStore(
@@ -24,18 +24,45 @@ export const store = createStore(
   )
 );
 
-const addFilter = filter => {
+const filterCounter = filter => {
+  const getAllFilters = store.getState().allFilters;
+  // filter function to retrieve the filter that should increment or decrement
+  return getAllFilters.filters.filter(filterUpdated => {
+    return filter.filterName === filterUpdated.filterName;
+  });
+};
+
+const incrementFilterCounter = filter => {
+  const incrementedFilter = filterCounter(filter);
+  // add 1 to filterCount prop
+  incrementedFilter[0].filterCount = incrementedFilter[0].filterCount + 1;
+};
+
+const decrementFilterCounter = filter => {
+  const decrementedFilter = filterCounter(filter);
+  // substract 1 to filterCount prop
+  decrementedFilter[0].filterCount = decrementedFilter[0].filterCount - 1;
+};
+
+const addFilter = (filter, filterParent) => {
   store.dispatch({ type: 'ADD_FILTER', filter });
+  // As you add filters with the checkboxes the filter count should increment
+  incrementFilterCounter(filterParent);
   let categories = store.getState().selectedFilter;
+  // fetch clips by selected filters
   store.dispatch(fetchClipsByFilters(categories));
 };
 
-const removeFilter = filter => {
+const removeFilter = (filter, filterParent) => {
   store.dispatch({ type: 'REMOVE_FILTER', filter });
+  // As you remove filters with the checkboxes the filter count should decrement
+  decrementFilterCounter(filterParent);
   let categories = store.getState().selectedFilter;
+  // fetch clips by selected filters
   store.dispatch(fetchClipsByFilters(categories));
 };
 
+// First load of clips and filters
 store.dispatch(fetchClips());
 store.dispatch(fetchFilters());
 
@@ -49,11 +76,15 @@ export default React => () => {
     addFilter,
     removeFilter
   };
+  const styles = {
+    content: {
+      display: 'flex'
+    }
+  };
   return (
-    <div className="content">
+    <div className="content" style={ styles.content }>
       <Filter { ...filterProps } />
       <Clip clips={state.allClips.clips} />
-      <Clip />
     </div>
   );
 };
