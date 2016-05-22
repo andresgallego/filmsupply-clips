@@ -23,6 +23,9 @@ export const selectedFilter = (
         ...state.slice(0, index),
         ...state.slice(index + 1)
       ];
+    case 'CLEAR_ALL':
+      state = [];
+      return state;
     default:
       return state;
   }

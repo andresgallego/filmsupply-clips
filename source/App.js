@@ -62,6 +62,19 @@ const removeFilter = (filter, filterParent) => {
   store.dispatch(fetchClipsByFilters(categories));
 };
 
+const clearFilterCount = () => {
+  const getAllFilters = store.getState().allFilters;
+  return getAllFilters.filters.map(filter => {
+    filter.filterCount = 0;
+  });
+};
+
+const clearAll = () => {
+  store.dispatch({ type: 'CLEAR_ALL' });
+  clearFilterCount();
+  store.dispatch(fetchClips());
+};
+
 // First load of clips and filters
 store.dispatch(fetchClips());
 store.dispatch(fetchFilters());
@@ -74,7 +87,8 @@ export default React => () => {
     filters: state.allFilters.filters,
     selectedFilter: state.selectedFilter,
     addFilter,
-    removeFilter
+    removeFilter,
+    clearAll
   };
   const styles = {
     content: {

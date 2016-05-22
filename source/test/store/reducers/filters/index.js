@@ -131,4 +131,34 @@ test('filters', nest => {
     assert.end();
 
   });
+
+  nest.test('CLEAR_ALL action', assert => {
+    const message = 'empty selectedFilter array';
+
+    const stateBefore = [
+      {
+        id: 0,
+        name: 'Baby / Infant'
+      },
+      {
+        id: 1,
+        name: 'Teenager'
+      }
+    ];
+
+    const action = {
+      type: 'CLEAR_ALL'
+    };
+
+    const expected = [];
+
+    deepFreeze(stateBefore);
+    deepFreeze(action);
+
+    const actual = selectedFilter(stateBefore, action);
+
+    assert.deepEqual(actual, expected, message);
+    assert.end();
+
+  });
 });

@@ -168,7 +168,39 @@ test('Filter', nest => {
     assert.deepEqual(actual, expected, msg);
 
     assert.end();
+  });
 
+  nest.test('...filter', assert => {
+    const msg = 'When click clear all button filter count should be removed';
+
+    const filterProps = {
+      filters: [
+        {
+          id: 1,
+          filterName: 'Age',
+          filterCount: 0,
+          subfilters: [
+            {
+              id: 19,
+              name: 'Toddler (2-4 years old)'
+            }
+          ]
+        }
+      ]
+    };
+
+    const el = <Filter { ...filterProps }/>;
+
+    const $ = dom.load(render(el));
+    const output = $('.filter-counter').text();
+    console.log('output ', output);
+    const actual = output === '';
+
+    const expected = true;
+
+    assert.deepEqual(actual, expected, msg);
+
+    assert.end();
   });
 
 });

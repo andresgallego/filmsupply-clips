@@ -1,5 +1,5 @@
 
-export default React => ({filters, addFilter, removeFilter, selectedFilter}) => {
+export default React => ({filters, addFilter, removeFilter, selectedFilter, clearAll}) => {
 
   let checkedFilter = [];
 
@@ -44,6 +44,7 @@ export default React => ({filters, addFilter, removeFilter, selectedFilter}) => 
       {
         filters ? filters.map(filter => FilterListItem({filter})) : ''
       }
+      <a onClick={clearAll}>Clear All</a>
     </section>
   );
 
