@@ -3,7 +3,7 @@ import createFilters from 'components/filters';
 import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
-import { fetchClips, fetchClipsByFilters } from 'actions/clips';
+import { fetchClips, fetchClipsByFilters, makeUrlHash } from 'actions/clips';
 import { fetchFilters } from 'actions/filters';
 import { allClips } from 'store/reducers/clips';
 import { allFilters, selectedFilter } from 'store/reducers/filters';
@@ -44,11 +44,21 @@ const decrementFilterCounter = filter => {
   decrementedFilter[0].filterCount = decrementedFilter[0].filterCount - 1;
 };
 
+const changeUrlHash = categories => {
+  const urlParams = makeUrlHash(categories);
+  if (urlParams) {
+    window.history.pushState(null, null, `clips?${urlParams}`);
+  } else {
+    window.history.pushState(null, null, window.location.origin);
+  }
+};
+
 const addFilter = (filter, filterParent) => {
   store.dispatch({ type: 'ADD_FILTER', filter });
   // As you add filters with the checkboxes the filter count should increment
   incrementFilterCounter(filterParent);
   let categories = store.getState().selectedFilter;
+  changeUrlHash(categories);
   // fetch clips by selected filters
   store.dispatch(fetchClipsByFilters(categories));
 };
@@ -58,6 +68,7 @@ const removeFilter = (filter, filterParent) => {
   // As you remove filters with the checkboxes the filter count should decrement
   decrementFilterCounter(filterParent);
   let categories = store.getState().selectedFilter;
+  changeUrlHash(categories);
   // fetch clips by selected filters
   store.dispatch(fetchClipsByFilters(categories));
 };
@@ -72,12 +83,34 @@ const clearFilterCount = () => {
 const clearAll = () => {
   store.dispatch({ type: 'CLEAR_ALL' });
   clearFilterCount();
+  window.history.pushState(null, null, window.location.origin);
   store.dispatch(fetchClips());
+};
+
+const addFilterByUrl = url => {
+  const idsInUrlToInt = url.map(id => parseInt(id));
+  const filters = store.getState().allFilters.filters;
+  filters.map(filter => {
+    return filter.subfilters.filter(subfilter => {
+      return idsInUrlToInt.indexOf(subfilter.id) !== -1;
+    }).map(subfilter => {
+      store.dispatch({ type: 'ADD_FILTER', filter: subfilter });
+      // As you add filters with the checkboxes the filter count should increment
+      incrementFilterCounter(filter);
+      let categories = store.getState().selectedFilter;
+      // fetch clips by selected filters
+      store.dispatch(fetchClipsByFilters(categories));
+    });
+  });
 };
 
 // First load of clips and filters
 store.dispatch(fetchClips());
-store.dispatch(fetchFilters());
+store.dispatch(fetchFilters())
+  .then(() => {
+    let idsInUrl = window.location.search.split('?').join('').split('categories=').join('').split('&');
+    addFilterByUrl(idsInUrl);
+  });
 
 export default React => () => {
   const Clip = createClips(React);

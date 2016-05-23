@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import _ from 'lodash';
 
 const requestClips = () => {
   return {
@@ -23,14 +24,34 @@ const getThumbUrl = json => {
   return thumbUrl;
 };
 
-export const fetchClipsByFilters = categories => {
+const listOfCategoriesId = categories => {
   const lisfOfCategories = categories.map(cat => {
     return `categories[]=${cat.id}`;
   });
+  return lisfOfCategories;
+};
+
+export const makeUrlHash = categories => {
+  const categoriesId = categories.map(cat=> {
+    return cat.id;
+  });
+  const UniqIds = _.uniq(categoriesId);
+  const lisfOfParams = UniqIds.map(id => `categories=${id}`);
+  const joinParams = lisfOfParams.join('&');
+  return joinParams;
+};
+
+const concatUrl = categories => {
+  const lisfOfCategories = listOfCategoriesId(categories);
   const joinCategories = lisfOfCategories.join('&');
+  return joinCategories;
+};
+
+export const fetchClipsByFilters = categories => {
+  const urlCategories = concatUrl(categories);
   return dispatch => {
     dispatch(requestClips());
-    return fetch(`https://api.filmsupply.com/api/clips?${joinCategories}`)
+    return fetch(`https://api.filmsupply.com/api/clips?${urlCategories}`)
       .then(res => res.json())
       .then(json => getThumbUrl(json))
       .then(thumbUrl => dispatch(receiveClips(thumbUrl)))

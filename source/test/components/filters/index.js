@@ -139,7 +139,7 @@ test('Filter', nest => {
   });
 
   nest.test('...filter', assert => {
-    const msg = 'As you select filters with the checkboxes the filter count should increment and decrement';
+    const msg = 'As you select filters with the checkboxes, the filter count should increment and decrement';
 
     const filterProps = {
       filters: [
@@ -171,7 +171,7 @@ test('Filter', nest => {
   });
 
   nest.test('...filter', assert => {
-    const msg = 'When click clear all button filter count should be removed';
+    const msg = 'When click clear all button, filter count should be removed';
 
     const filterProps = {
       filters: [
@@ -202,5 +202,4 @@ test('Filter', nest => {
 
     assert.end();
   });
-
 });
